@@ -25,19 +25,6 @@ def extract_themes(query: str) -> str:
     )
     return completion.choices[0].message.content.strip()
 
-def generate_recommendation(user_query: str, summaries: list[str]) -> str:
-    prompt = (
-        f"The user is looking for a book that matches this description: '{user_query}'\n\n"
-        f"Here are some book summaries:\n\n" +
-        "\n\n".join(summaries) +
-        "\n\nBased on the summaries, recommend the most suitable book and explain why. "
-        "Respond in English only."
-    )
-    completion = oa_client.chat.completions.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return completion.choices[0].message.content.strip()
 
 def generate_speech(text: str, model="tts-1", voice="nova") -> str:
     speech_response = oa_client.audio.speech.create(
@@ -53,8 +40,7 @@ def generate_speech(text: str, model="tts-1", voice="nova") -> str:
     with open(path, "wb") as f:
         f.write(speech_response.content)
 
-    return path  # or return relative url if needed
-
+    return path
 tools = [
     {
         "type": "function",
@@ -79,6 +65,8 @@ tools = [
 def recommend_and_call_tool(user_query: str, summaries: list[str]) -> str:
     system_prompt = (
         "You are a helpful assistant that recommends books based on user interests. "
+        "You should not respond to offensive language or inappropriate content. "
+        "you must respond politely with a warning and do NOT continue the conversation or generate a recommendation. "
         "If you mention a specific book, you may use a tool to return its full summary."
     )
 

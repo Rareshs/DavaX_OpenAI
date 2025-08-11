@@ -1,6 +1,5 @@
 from flask import Flask, request, render_template,jsonify,url_for
-from summary import get_summary_by_title
-from gpt_interface import extract_themes, generate_recommendation,generate_speech,recommend_and_call_tool,generate_image
+from gpt_interface import extract_themes,generate_speech,recommend_and_call_tool,generate_image
 from rag_core import get_embedding, setup_chroma
 import os
 
@@ -74,6 +73,6 @@ def generate_image_route():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-    
+
 if __name__ == "__main__":
     app.run(debug=True)

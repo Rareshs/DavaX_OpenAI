@@ -63,29 +63,54 @@
         }
 
 
+    // function generateImage() {
+    // const resultText = document.getElementById("ai-result").innerText;
+
+    // const prompt = "Create a book cover based on the following text: " + resultText;
+
+    // fetch("/generate_image", {
+    //     method: "POST",
+    //     headers: {
+    //         "Content-Type": "application/json"
+    //     },
+    //     body: JSON.stringify({ prompt: prompt })
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //     if (data.image_url) {
+    //         document.getElementById("image-container").innerHTML = `
+    //             <h3>Generated Book Image:</h3>
+    //             <img id="generated-image" src="{{ image_url }}" alt="Book cover" style="max-width: 100%; border: 2px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+    //         `;
+    //     } else {
+    //         alert("Eroare la generarea imaginii: " + (data.error || "necunoscută"));
+    //     }
+    // });
+    // }
+    // 
     function generateImage() {
-    const resultText = document.getElementById("ai-result").innerText;
+        const resultText = document.getElementById("ai-result").innerText;
+        const prompt = "Create a book cover based on the following text: " + resultText;
 
-    const prompt = "Create a book cover based on the following text: " + resultText;
-
-    fetch("/generate_image", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ prompt: prompt })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.image_url) {
-            document.getElementById("image-container").innerHTML = `
-                <h3>Generated Book Image:</h3>
-                <img id="generated-image" src="{{ image_url }}" alt="Book cover" style="max-width: 100%; border: 2px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-            `;
-        } else {
-            alert("Eroare la generarea imaginii: " + (data.error || "necunoscută"));
-        }
-    });
+        fetch("/generate_image", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ prompt: prompt })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.image_url) {
+                document.getElementById("image-container").innerHTML = `
+                    <h3>Generated Book Image:</h3>
+                    <img id="generated-image" src="${data.image_url}" alt="Book cover"
+                        style="max-width: 100%; height: auto; border: 2px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-top: 10px;">
+                `;
+            } else {
+                alert("⚠️ Eroare la generarea imaginii: " + (data.error || "necunoscută"));
+            }
+        });
     }
     </script>
 </body>
