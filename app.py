@@ -10,23 +10,28 @@ collection = setup_chroma()
 @app.route("/", methods=["GET", "POST"])
 def home():
     result = None
+    recommended_titles = []
+
     if request.method == "POST":
         user_query = request.form.get("query", "")
         if user_query:
-            # 1. Extrage temele
+            # 1. Extract themes from user query
             themes = extract_themes(user_query)
 
-            # 2. Facem căutarea semantică în ChromaDB
+            # 2. Query ChromaDB for semantic matches
             embedding = get_embedding(themes)
             results = collection.query(query_embeddings=[embedding], n_results=3)
+
             summaries = results["documents"][0]
             metadatas = results["metadatas"][0]
 
-            # 3. GPT face recomandarea și decide dacă apelează tool-ul
-            result = recommend_and_call_tool(user_query, summaries,metadatas)
+            # 3. Call GPT with the summaries and receive response + titles
+            response = recommend_and_call_tool(user_query, summaries, metadatas)
+            result = response["result"]
+            recommended_titles = response["recommended_titles"]
 
-    # Trimiți doar result (rezumatul complet e deja inclus în textul GPT)
-    return render_template("index.html", result=result)
+    # 4. Return results to template
+    return render_template("index.html", result=result, recommended_titles=recommended_titles)
 
 
 @app.route('/speak', methods=['POST'])

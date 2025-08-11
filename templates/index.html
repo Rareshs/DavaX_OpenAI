@@ -22,10 +22,16 @@
             <div class="card-body">
                 <h5 class="card-title">📖 AI Answer:</h5>
                 <p class="card-text" id="ai-result">{{ result|safe }}</p>
-                <div class="d-flex gap-2">
+
+                <div class="d-flex flex-wrap gap-2 mt-3">
                     <button type="button" class="btn btn-success" onclick="speakText()">🔊 Play</button>
                     <button type="button" class="btn btn-secondary" onclick="stopSpeech()">⏹ Stop</button>
-                    <button type="button" class="btn btn-info" onclick="generateImage()">🎨 Generate Image</button>
+
+                    {% if recommended_titles and recommended_titles|length == 1 %}
+                        <button type="button" class="btn btn-info" onclick="generateImage()">🎨 Generate Image</button>
+                    {% else %}
+                        <button type="button" class="btn btn-info" disabled>🎨 Generate Image (1 book required)</button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -34,8 +40,10 @@
     {% endif %}
 </div>
 
+<!-- JS Section -->
 <script>
     let currentAudio = null;
+    let recommendedTitle = {{ (recommended_titles[0] if recommended_titles and recommended_titles|length == 1 else "null") | tojson }};
 
     function speakText() {
         const summary = document.getElementById("ai-result").innerText;
@@ -72,10 +80,13 @@
     }
 
     function generateImage() {
-        const resultText = document.getElementById("ai-result").innerText;
-        const prompt = "Create a book cover based on the following text: " + resultText;
+        if (!recommendedTitle) {
+            alert("Image generation is only available when exactly one book is recommended.");
+            return;
+        }
 
-        // Show spinner before fetch
+        const prompt = `Create a book cover for the book titled: ${recommendedTitle}`;
+
         document.getElementById("image-container").innerHTML = `
             <div class="text-center mt-4">
                 <div class="spinner-border text-primary" role="status">
@@ -93,7 +104,6 @@
         .then(response => response.json())
         .then(data => {
             if (data.image_url) {
-                // Replace spinner with the image
                 document.getElementById("image-container").innerHTML = `
                     <h4 class="mt-4">Generated Book Image</h4>
                     <img src="${data.image_url}" alt="Book cover" class="img-fluid rounded shadow-sm mt-3" style="max-width: 400px;">
@@ -103,7 +113,6 @@
             }
         });
     }
-
 </script>
 </body>
 </html>

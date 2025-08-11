@@ -6,7 +6,7 @@ import uuid
 import os
 from summary import get_summary_by_title
 import base64
-
+import re
 
 dotenv.load_dotenv()
 oa_client = OpenAI(api_key=os.getenv("OPENAI_API"))
@@ -120,10 +120,22 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
                     }
                 ]
             )
-            return followup.choices[0].message.content
+            final_result = followup.choices[0].message.content
+            titles = extract_titles_from_response(final_result)
+
+            return {
+                "result": final_result,
+                "recommended_titles": titles
+}
 
     # Fallback if no tool is called
-    return msg.content
+    result_text = msg.content
+    titles = extract_titles_from_response(result_text)
+
+    return {
+        "result": result_text,
+        "recommended_titles": titles
+}
 
 
 def generate_image(prompt: str) -> str:
@@ -144,3 +156,7 @@ def generate_image(prompt: str) -> str:
         f.write(base64.b64decode(image_base64))
 
     return path
+
+
+def extract_titles_from_response(response: str) -> list[str]:
+    return re.findall(r"\*\*(.*?)\*\*", response)
