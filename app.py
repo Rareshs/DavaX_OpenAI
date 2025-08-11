@@ -20,9 +20,10 @@ def home():
             embedding = get_embedding(themes)
             results = collection.query(query_embeddings=[embedding], n_results=3)
             summaries = results["documents"][0]
+            metadatas = results["metadatas"][0]
 
             # 3. GPT face recomandarea și decide dacă apelează tool-ul
-            result = recommend_and_call_tool(user_query, summaries)
+            result = recommend_and_call_tool(user_query, summaries,metadatas)
 
     # Trimiți doar result (rezumatul complet e deja inclus în textul GPT)
     return render_template("index.html", result=result)

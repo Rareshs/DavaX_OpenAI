@@ -31,7 +31,7 @@ book_summaries_dict = {
     ),
     "Harry Potter and the Sorcerer's Stone": (
         "A young boy discovers he is a wizard and attends Hogwarts, making friends and facing danger in his first year. "
-        "Themes: friendship, courage, self-discovery."
+        "Themes: friendship, courage, self-discovery, magic."
     ),
     "Fahrenheit 451": (
         "In a world where books are banned, firemen burn them. Montag begins to question his role and society. "

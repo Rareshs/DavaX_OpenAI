@@ -62,18 +62,31 @@ tools = [
 ]
 
 
-def recommend_and_call_tool(user_query: str, summaries: list[str]) -> str:
+def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: list[dict]) -> str:
     system_prompt = (
-        "You are a helpful assistant that recommends books based on user interests. "
+        "You are a helpful assistant that recommends books based only on the provided summaries. "
+        "Each summary includes the title of the book. "
+        "Do not invent or mention any book that is not included in the summaries. "
+        "If none of the books are suitable, respond politely that no recommendation can be made. "
+        "If multiple books match the user's interests, you must list all of them. "
+        "Format your response as a bullet list. "
+        "Each list item must start with the book title in bold, followed by a short reason why it matches the user's request. "
+        "Do not omit any relevant book from the summaries. "
+        "Only if you are recommending exactly one book, you may use a tool to return its full summary. "
         "You should not respond to offensive language or inappropriate content. "
-        "you must respond politely with a warning and do NOT continue the conversation or generate a recommendation. "
-        "If you mention a specific book, you may use a tool to return its full summary."
+        "You must respond politely with a warning and do NOT continue the conversation or generate a recommendation."
+    )
+
+
+    # Combine summaries with their corresponding titles
+    summaries_text = "\n\n".join(
+        [f"Title: {meta['title']}\nSummary: {summary}" for meta, summary in zip(metadatas, summaries)]
     )
 
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_query},
-        {"role": "assistant", "content": "Here are some book summaries:\n\n" + "\n\n".join(summaries)}
+        {"role": "assistant", "content": "Here are some book summaries:\n\n" + summaries_text}
     ]
 
     response = oa_client.chat.completions.create(
@@ -85,6 +98,7 @@ def recommend_and_call_tool(user_query: str, summaries: list[str]) -> str:
 
     msg = response.choices[0].message
 
+    # If GPT decides to call the tool
     if msg.tool_calls:
         tool_call = msg.tool_calls[0]
         args = json.loads(tool_call.function.arguments)
@@ -92,6 +106,7 @@ def recommend_and_call_tool(user_query: str, summaries: list[str]) -> str:
         if tool_call.function.name == "get_summary_by_title":
             summary = get_summary_by_title(args["title"])
 
+            # Respond with full tool result
             followup = oa_client.chat.completions.create(
                 model="gpt-4-0613",
                 messages=[
@@ -107,7 +122,9 @@ def recommend_and_call_tool(user_query: str, summaries: list[str]) -> str:
             )
             return followup.choices[0].message.content
 
+    # Fallback if no tool is called
     return msg.content
+
 
 def generate_image(prompt: str) -> str:
     image_response = oa_client.images.generate(
