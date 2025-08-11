@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Librarian</title>
+</head>
+<body>
+    <h2>AI Book Recommendations</h2>
+
+    <form method="POST">
+        <input type="text" name="query" placeholder="Write your prompt..." size="60" required>
+        <button type="submit">Send</button>
+    </form>
+
+    {% if result %}
+        <h3>AI Answer:</h3>
+        <p id="ai-result">{{ result|safe }}</p>
+
+        <button type="button" onclick="speakText()">🔊 Play</button>
+        <button type="button" onclick="stopSpeech()">⏹ Stop</button>
+        <button type="button"  onclick="generateImage()">Generate image</button>
+        <div id="image-container"></div>
+
+    {% endif %}
+
+    <script>
+        let currentAudio = null;
+
+        function speakText() {
+            const summary = document.getElementById("ai-result").innerText;
+
+            fetch("/speak", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    summary: summary,
+                    model: "tts-1",
+                    voice: "nova"
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.audio_url) {
+                    if (currentAudio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                    }
+                    currentAudio = new Audio(data.audio_url);
+                    currentAudio.play();
+                } else {
+                    alert("Eroare la redarea vocii: " + (data.error || "necunoscută"));
+                }
+            });
+        }
+
+        function stopSpeech() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+        }
+
+
+    function generateImage() {
+    const resultText = document.getElementById("ai-result").innerText;
+
+    const prompt = "Create a book cover based on the following text: " + resultText;
+
+    fetch("/generate_image", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ prompt: prompt })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.image_url) {
+            document.getElementById("image-container").innerHTML = `
+                <h3>Generated Book Image:</h3>
+                <img id="generated-image" src="{{ image_url }}" alt="Book cover" style="max-width: 100%; border: 2px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            `;
+        } else {
+            alert("Eroare la generarea imaginii: " + (data.error || "necunoscută"));
+        }
+    });
+    }
+    </script>
+</body>
+</html>
