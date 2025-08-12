@@ -15,7 +15,6 @@
             <input type="text" id="query-input" name="query" placeholder="Write your prompt..." class="form-control" required>
             <button type="submit" class="btn btn-primary">Send</button>
             <button type="button" class="btn btn-outline-secondary" id="start-recording-btn">🎙️ Speak</button>
-
         </div>
     </form>
 
@@ -26,11 +25,11 @@
                 <p class="card-text" id="ai-result">{{ result|safe }}</p>
 
                 <div class="d-flex flex-wrap gap-2 mt-3">
-                    <button type="button" class="btn btn-success" onclick="speakText()">🔊 Play</button>
-                    <button type="button" class="btn btn-secondary" onclick="stopSpeech()">⏹ Stop</button>
+                    <button type="button" class="btn btn-success" id="play-btn">🔊 Play</button>
+                    <button type="button" class="btn btn-secondary" id="stop-btn">⏹ Stop</button>
 
                     {% if recommended_titles and recommended_titles|length == 1 %}
-                        <button type="button" class="btn btn-info" onclick="generateImage()">🎨 Generate Image</button>
+                        <button type="button" class="btn btn-info" id="generate-image-btn">🎨 Generate Image</button>
                     {% else %}
                         <button type="button" class="btn btn-info" disabled>🎨 Generate Image (1 book required)</button>
                     {% endif %}
@@ -42,12 +41,22 @@
     {% endif %}
 </div>
 
-<!-- JS Section -->
+<!-- Inject Flask data as JSON -->
+<script id="data-script" type="application/json">
+    {
+        "recommendedTitle": {{ (recommended_titles[0] if recommended_titles and recommended_titles|length == 1 else "null") | tojson }}
+    }
+</script>
+
+<!-- Main Logic -->
 <script>
     let currentAudio = null;
-    let recommendedTitle = {{ (recommended_titles[0] if recommended_titles and recommended_titles|length == 1 else "null") | tojson }};
     let mediaRecorder;
     let audioChunks = [];
+
+    // Read Flask-injected data
+    const data = JSON.parse(document.getElementById("data-script").textContent);
+    let recommendedTitle = data.recommendedTitle;
 
     const queryInput = document.getElementById("query-input");
     const startRecordingBtn = document.getElementById("start-recording-btn");
@@ -80,7 +89,7 @@
                         queryInput.value = data.transcription;
                         recordingStatus.textContent = "✅ Transcription done. Submitting...";
                         setTimeout(() => {
-                            document.querySelector("form").submit(); // Submit after inserting
+                            document.querySelector("form").submit();
                         }, 1000);
                     } else {
                         recordingStatus.textContent = "❌ Could not transcribe.";
@@ -92,12 +101,11 @@
             recordingStatus.textContent = "🎙️ Listening... Click again to stop.";
             startRecordingBtn.textContent = "🛑 Stop";
 
-            // Replace the click handler to stop next time
             startRecordingBtn.onclick = () => {
                 mediaRecorder.stop();
                 stream.getTracks().forEach(track => track.stop());
                 startRecordingBtn.textContent = "🎙️ Speak";
-                startRecordingBtn.onclick = null; // Reset to original listener
+                startRecordingBtn.onclick = null;
             };
         } catch (err) {
             console.error("Mic access error:", err);
@@ -105,8 +113,9 @@
         }
     });
 
-    function speakText() {
-        const summary = document.getElementById("ai-result").innerText;
+    document.getElementById("play-btn")?.addEventListener("click", () => {
+        const summary = document.getElementById("ai-result")?.innerText;
+        if (!summary) return;
 
         fetch("/speak", {
             method: "POST",
@@ -130,16 +139,16 @@
                 alert("Eroare la redarea vocii: " + (data.error || "necunoscută"));
             }
         });
-    }
+    });
 
-    function stopSpeech() {
+    document.getElementById("stop-btn")?.addEventListener("click", () => {
         if (currentAudio) {
             currentAudio.pause();
             currentAudio.currentTime = 0;
         }
-    }
+    });
 
-    function generateImage() {
+    document.getElementById("generate-image-btn")?.addEventListener("click", () => {
         if (!recommendedTitle) {
             alert("Image generation is only available when exactly one book is recommended.");
             return;
@@ -172,8 +181,8 @@
                 alert("⚠️ Eroare la generarea imaginii: " + (data.error || "necunoscută"));
             }
         });
-    }
-    
+    });
 </script>
+
 </body>
 </html>
