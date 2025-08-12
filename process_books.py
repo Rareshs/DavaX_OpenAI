@@ -3,7 +3,7 @@
 from rag_core import setup_chroma, parse_books, generate_id, get_embedding
 
 collection = setup_chroma()
-books = parse_books("book_summ.txt")
+books = parse_books("data/book_summ.txt")
 
 for book in books:
     book_id = generate_id(book["title"])
