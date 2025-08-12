@@ -89,6 +89,7 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
 
         "⚠️ Content Safety:\n"
         "- If the user message includes offensive or inappropriate language, do not generate a recommendation.\n"
+        "- If the user asks for content that violates OpenAI's content policy, such as hate speech, violence, or adult content, do not generate a recommendation.\n"
         "- Politely respond with a warning and stop the conversation.\n"
 )
 
@@ -160,7 +161,7 @@ def generate_image(prompt: str) -> str:
         quality="low"  # sau "high" pentru calitate mai bună
     )
 
-    # Returnăm direct imaginea ca base64, fără să o salvăm
+    # Retunreaza direct imaginea ca base64, fără să o salvăm
     return image_response.data[0].b64_json
 
 
