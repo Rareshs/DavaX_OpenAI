@@ -17,7 +17,7 @@ def extract_themes(query: str) -> str:
         "Return only a comma-separated list of 2–3 keywords. Respond in English regardless of the input language."
     )
     completion = oa_client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4.1-mini",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": query}
@@ -64,19 +64,33 @@ tools = [
 
 def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: list[dict]) -> str:
     system_prompt = (
-        "You are a helpful assistant that recommends books based only on the provided summaries. "
-        "Each summary includes the title of the book. "
-        "Do not invent or mention any book that is not included in the summaries. "
-        "If none of the books are suitable, respond politely that no recommendation can be made. "
-        "If multiple books match the user's interests, you must list all of them. "
-        "Format your response as a bullet list. "
-        "Each list item must start with the book title in bold, followed by a short reason why it matches the user's request. "
-        "Do not omit any relevant book from the summaries. "
-        "Only if you are recommending exactly one book, you may use a tool to return its full summary. "
-        "You should not respond to offensive language or inappropriate content. "
-        "You must respond politely with a warning and do NOT continue the conversation or generate a recommendation."
-    )
+        "You are a helpful assistant that recommends books based only on the provided summaries.\n"
+        "Each summary includes the title of the book.\n\n"
 
+        "📚 Recommendation Rules:\n"
+        "- Only recommend books that appear in the provided summaries.\n"
+        "- Do not invent or mention any book that is not included.\n"
+        "- If no suitable match is found, respond politely that no recommendation can be made.\n"
+        "- If multiple books match, list them all.\n"
+        "- If multiple books match the user's interests, you must list all of them.\n"
+        "- Format your response as a bullet list.\n"
+        "- Each bullet must begin with the book title in **double asterisks**, followed by a short reason for the match.\n"
+        "- Do not omit any relevant title from the summaries.\n\n"
+
+        "🛠️ Tool Usage:\n"
+        "- If the user requests to **summarize**, **describe**, or **explain** a specific book, call the `get_summary_by_title` tool.\n"
+        "- This includes questions like:\n"
+        "  • 'Can you describe The Hobbit?'\n"
+        "  • 'What is 1984 about?'\n"
+        "  • 'Tell me more about Brave New World'\n"
+        "- You must wrap the book title in double asterisks in your response (e.g., **The Great Gatsby**).\n"
+        "- Use the exact title provided in the summaries.\n"
+        "- Only call the tool if **one specific book** is clearly mentioned.\n\n"
+
+        "⚠️ Content Safety:\n"
+        "- If the user message includes offensive or inappropriate language, do not generate a recommendation.\n"
+        "- Politely respond with a warning and stop the conversation.\n"
+)
 
     # Combine summaries with their corresponding titles
     summaries_text = "\n\n".join(
@@ -90,7 +104,7 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
     ]
 
     response = oa_client.chat.completions.create(
-        model="gpt-4-0613",
+        model="gpt-4.1-mini",
         messages=messages,
         tools=tools,
         tool_choice="auto"
@@ -108,7 +122,7 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
 
             # Respond with full tool result
             followup = oa_client.chat.completions.create(
-                model="gpt-4-0613",
+                model="gpt-4.1-mini",
                 messages=[
                     *messages,
                     msg,
@@ -140,7 +154,7 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
 
 def generate_image(prompt: str) -> str:
     image_response = oa_client.images.generate(
-        model="gpt-image-1",  # sau gpt-4o, gpt-4.1 (care suportă tool image)
+        model="gpt-4.1-mini",  # sau gpt-4o, gpt-4.1 (care suportă tool image)
         prompt=prompt,
         size="1024x1024",
         quality="low"  # sau "high" pentru calitate mai bună,
