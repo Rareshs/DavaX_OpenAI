@@ -154,7 +154,7 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
 
 def generate_image(prompt: str) -> str:
     image_response = oa_client.images.generate(
-        model="gpt-4.1-mini",  # sau gpt-4o, gpt-4.1 (care suportă tool image)
+        model="gpt-image-1",
         prompt=prompt,
         size="1024x1024",
         quality="low"  # sau "high" pentru calitate mai bună,
