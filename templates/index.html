@@ -228,12 +228,17 @@
         })
         .then(response => response.json())
         .then(data => {
-            if (data.image_url) {
-                document.getElementById("image-container").innerHTML = `
-                    <h4 class="mt-4">Generated Book Image</h4>
-                    <img src="${data.image_url}" alt="Book cover" class="img-fluid rounded shadow-sm mt-3" style="max-width: 400px;">
-                `;
-            } else {
+        if (data.image_base64) {
+    document.getElementById("image-container").innerHTML = `
+        <h4 class="mt-4">Generated Book Image</h4>
+        <img src="data:image/png;base64,${data.image_base64}" 
+             alt="Book cover" 
+             class="img-fluid rounded shadow-sm mt-3" 
+             style="max-width: 400px;">
+            `;
+        }
+    
+         else {
                 alert("⚠️ Eroare la generarea imaginii: " + (data.error || "necunoscută"));
             }
         });

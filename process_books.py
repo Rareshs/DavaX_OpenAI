@@ -15,4 +15,4 @@ for book in books:
     )
 
 print("Vector store populat cu succes.")
-print(collection.peek(5))
+print(collection.peek(3)) 

@@ -157,19 +157,12 @@ def generate_image(prompt: str) -> str:
         model="gpt-image-1",
         prompt=prompt,
         size="1024x1024",
-        quality="low"  # sau "high" pentru calitate mai bună,
+        quality="low"  # sau "high" pentru calitate mai bună
     )
 
-    image_base64 = image_response.data[0].b64_json
+    # Returnăm direct imaginea ca base64, fără să o salvăm
+    return image_response.data[0].b64_json
 
-    filename = f"{uuid.uuid4().hex}.png"
-    path = os.path.join("static", "images", filename)
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-
-    with open(path, "wb") as f:
-        f.write(base64.b64decode(image_base64))
-
-    return path
 
 def speech_to_text(audio_path: str) -> str:
     with open(audio_path, "rb") as audio_file:

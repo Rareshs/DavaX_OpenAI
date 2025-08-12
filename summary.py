@@ -40,6 +40,13 @@ book_summaries_dict = {
     "The Alchemist": (
         "Santiago, a shepherd, dreams of finding treasure in Egypt. On his journey, he learns to follow his heart "
         "and embrace the Soul of the World. Themes: destiny, self-discovery, faith."
+    ),
+    "All Quiet on the Western Front": (
+        "Paul Bäumer, a young German soldier, enlists in World War I alongside his classmates, driven by patriotism and youthful enthusiasm. "
+        "However, he is soon confronted by the brutal horrors of trench warfare: constant bombardments, meaningless slaughter, and the psychological toll of surviving while others die. "
+        "As the war drags on, Paul becomes emotionally numb and increasingly detached from civilian life, realizing that the glory of war is a lie. "
+        "The novel is a stark, honest portrayal of the trauma and futility experienced by a generation of soldiers. "
+        "Themes: war, trauma, disillusionment, death, isolation."
     )
 }
 

@@ -49,6 +49,7 @@ def speak():
         filepath = generate_speech(summary, model=model, voice=voice)
 
         # Normalizează pentru URL (elimină "static/" și înlocuiește \ cu /)
+        # Problema pe windows este că calea are \ în loc de /
         relative_path = os.path.relpath(filepath, start="static").replace("\\", "/")
 
         return jsonify({
@@ -68,17 +69,11 @@ def generate_image_route():
         return jsonify({"error": "No prompt provided"}), 400
 
     try:
-        # Generează imaginea și salvează fișierul
-        image_path = generate_image(prompt)
-
-        # Creează URL-ul public pentru imagine
-        relative_path = os.path.relpath(image_path, start="static").replace("\\", "/")
-        image_url = url_for("static", filename=relative_path, _external=True)
-
-        return jsonify({"image_url": image_url})
-
+        image_base64 = generate_image(prompt)
+        return jsonify({"image_base64": image_base64})  #fara salvare
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
     
 @app.route("/voice_transcribe", methods=["POST"])
 def voice_transcribe():
