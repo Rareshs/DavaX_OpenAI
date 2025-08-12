@@ -1,5 +1,6 @@
+import uuid
 from flask import Flask, request, render_template,jsonify,url_for
-from gpt_interface import extract_themes,generate_speech,recommend_and_call_tool,generate_image
+from gpt_interface import extract_themes,generate_speech,recommend_and_call_tool,generate_image,speech_to_text
 from rag_core import get_embedding, setup_chroma
 import os
 
@@ -78,6 +79,24 @@ def generate_image_route():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route("/voice_transcribe", methods=["POST"])
+def voice_transcribe():
+    if "audio" not in request.files:
+        return jsonify({"error": "No audio file provided"}), 400
+
+    audio_file = request.files["audio"]
+    file_path = os.path.join("static", "audio_input", f"{uuid.uuid4().hex}.webm")
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    audio_file.save(file_path)
+
+    try:
+        text = speech_to_text(file_path)
+        os.remove(file_path)
+        return jsonify({"transcription": text})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
     
 
 if __name__ == "__main__":
