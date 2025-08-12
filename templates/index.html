@@ -4,41 +4,98 @@
     <meta charset="UTF-8">
     <title>Smart Librarian</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #f0f4f8, #d9e4f5);
+            min-height: 100vh;
+            font-family: "Segoe UI", Roboto, sans-serif;
+        }
+
+        .app-container {
+            max-width: 750px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-title {
+            font-weight: 700;
+            font-size: 2rem;
+            color: #2c3e50;
+        }
+
+        .input-group > input {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+        .input-group > button {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .btn {
+            height: 100%;
+            padding: 0.6rem 1rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #34495e;
+        }
+
+        .card-text {
+            font-size: 1.05rem;
+            color: #333;
+        }
+
+        #image-container img {
+            transition: transform 0.3s ease;
+        }
+
+        #image-container img:hover {
+            transform: scale(1.03);
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
-<div class="container py-5">
-    <h2 class="mb-4 text-center fw-bold">Smart Librarian – AI Book Recommendations</h2>
+<div class="container py-5 d-flex justify-content-center">
+    <div class="app-container w-100">
+        <h2 class="app-title text-center mb-4">📚 Smart Librarian – AI Book Recommendations</h2>
 
-    <form method="POST" class="mb-4">
-        <div class="input-group">
-            <input type="text" id="query-input" name="query" placeholder="Write your prompt..." class="form-control" required>
-            <button type="submit" class="btn btn-primary">Send</button>
-            <button type="button" class="btn btn-outline-secondary" id="start-recording-btn">🎙️ Speak</button>
-        </div>
-    </form>
+        <form method="POST" class="mb-4">
+            <div class="input-group">
+                <input type="text" id="query-input" name="query" placeholder="Ask for book suggestions, summaries..." class="form-control shadow-sm" required>
+                <button type="submit" class="btn btn-primary">Send</button>
+                <button type="button" class="btn btn-outline-secondary" id="start-recording-btn">🎙️</button>
+            </div>
+        </form>
 
-    {% if result %}
-        <div class="card mb-4 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">📖 AI Answer:</h5>
-                <p class="card-text" id="ai-result">{{ result|safe }}</p>
+        {% if result %}
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">📖 AI Answer</h5>
+                    <p class="card-text" id="ai-result">{{ result|safe }}</p>
 
-                <div class="d-flex flex-wrap gap-2 mt-3">
-                    <button type="button" class="btn btn-success" id="play-btn">🔊 Play</button>
-                    <button type="button" class="btn btn-secondary" id="stop-btn">⏹ Stop</button>
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <button type="button" class="btn btn-success" id="play-btn">🔊 Play</button>
+                        <button type="button" class="btn btn-secondary" id="stop-btn">⏹ Stop</button>
 
-                    {% if recommended_titles and recommended_titles|length == 1 %}
-                        <button type="button" class="btn btn-info" id="generate-image-btn">🎨 Generate Image</button>
-                    {% else %}
-                        <button type="button" class="btn btn-info" disabled>🎨 Generate Image (1 book required)</button>
-                    {% endif %}
+                        {% if recommended_titles and recommended_titles|length == 1 %}
+                            <button type="button" class="btn btn-info" id="generate-image-btn">🎨 Generate Image</button>
+                        {% else %}
+                            <button type="button" class="btn btn-info" disabled>🎨 Generate Image (1 book required)</button>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div id="image-container" class="text-center"></div>
-    {% endif %}
+            <div id="image-container" class="text-center mt-4"></div>
+        {% endif %}
+    </div>
 </div>
 
 <!-- Inject Flask data as JSON -->
@@ -48,13 +105,12 @@
     }
 </script>
 
-<!-- Main Logic -->
+<!-- Your JavaScript logic remains unchanged -->
 <script>
     let currentAudio = null;
     let mediaRecorder;
     let audioChunks = [];
 
-    // Read Flask-injected data
     const data = JSON.parse(document.getElementById("data-script").textContent);
     let recommendedTitle = data.recommendedTitle;
 
@@ -183,6 +239,5 @@
         });
     });
 </script>
-
 </body>
 </html>
