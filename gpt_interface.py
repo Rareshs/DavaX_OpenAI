@@ -82,9 +82,14 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
         "- Use the exact title provided in the summaries.\n"
 
         "⚠️ Content Safety:\n"
-        "- If the user message includes offensive or inappropriate language, do not generate a recommendation.\n"
-        "- If the user asks for content that violates OpenAI's content policy, such as hate speech, violence, or adult content, do not generate a recommendation.\n"
-        "- Politely respond with a warning and stop the conversation.\n"
+        "- You must always evaluate the user’s message for offensive, inappropriate, or unsafe content before replying.\n"
+        "- If the user’s input contains profanity, hate speech, explicit sexual content, or promotes violence, you MUST NOT continue the conversation.\n"
+        "- Do not generate or recommend any content in such cases.\n"
+        "- Instead, respond exactly like this:\n"
+        "  ⚠️ Your message contains inappropriate language or violates our safety guidelines. I cannot continue this conversation.\n"
+        "- You are not allowed to explain, justify, or respond in any other way.\n"
+
+
 )
 
     # Combine summaries with their corresponding titles
