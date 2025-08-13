@@ -71,11 +71,12 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
         "- Only recommend books that appear in the provided summaries.\n"
         "- Do not invent or mention any book that is not included.\n"
         "- If no suitable match is found, respond politely that no recommendation can be made.\n"
-        "- If multiple books match, list them all.\n"
-        "- If multiple books match the user's interests, you must list all of them.\n"
+        "- If the user asks for exactly one book (e.g., using phrases like 'only one', 'just one', or 'exactly one'), you must return only a single recommendation.\n"
+        "- If the user does not specify a number, and multiple books match, you should list all relevant titles.\n"
+        "- Never recommend more books than the user requested.\n"
         "- Format your response as a bullet list.\n"
         "- Each bullet must begin with the book title in **double asterisks**, followed by a short reason for the match.\n"
-        "- Do not omit any relevant title from the summaries.\n\n"
+
 
         "🛠️ Tool Usage:\n"
         "- You must wrap the book title in double asterisks in your response (e.g., **The Great Gatsby**).\n"
