@@ -78,14 +78,8 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
         "- Do not omit any relevant title from the summaries.\n\n"
 
         "🛠️ Tool Usage:\n"
-        "- If the user requests to **summarize**, **describe**, or **explain** a specific book, call the `get_summary_by_title` tool.\n"
-        "- This includes questions like:\n"
-        "  • 'Can you describe The Hobbit?'\n"
-        "  • 'What is 1984 about?'\n"
-        "  • 'Tell me more about Brave New World'\n"
         "- You must wrap the book title in double asterisks in your response (e.g., **The Great Gatsby**).\n"
         "- Use the exact title provided in the summaries.\n"
-        "- Only call the tool if **one specific book** is clearly mentioned.\n\n"
 
         "⚠️ Content Safety:\n"
         "- If the user message includes offensive or inappropriate language, do not generate a recommendation.\n"
@@ -113,7 +107,7 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
 
     msg = response.choices[0].message
 
-    # If GPT decides to call the tool
+    # ✅ If GPT made a tool call
     if msg.tool_calls:
         tool_call = msg.tool_calls[0]
         args = json.loads(tool_call.function.arguments)
@@ -121,7 +115,6 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
         if tool_call.function.name == "get_summary_by_title":
             summary = get_summary_by_title(args["title"])
 
-            # Respond with full tool result
             followup = oa_client.chat.completions.create(
                 model="gpt-4.1-mini",
                 messages=[
@@ -135,22 +128,33 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
                     }
                 ]
             )
+
             final_result = followup.choices[0].message.content
             titles = extract_titles_from_response(final_result)
 
             return {
                 "result": final_result,
                 "recommended_titles": titles
-}
+            }
 
-    # Fallback if no tool is called
+    # ❌ Fallback — if no tool call, format the summaries manually
     result_text = msg.content
     titles = extract_titles_from_response(result_text)
 
+    if titles:
+        full_blocks = [
+            f"• **{title}**\n{get_summary_by_title(title)}"
+            for title in titles
+        ]
+        summaries_text = "\n\n" + "\n\n".join(full_blocks)
+        final_result = "📚 Recommended Books:\n\n" + summaries_text
+    else:
+        final_result = result_text
+
     return {
-        "result": result_text,
+        "result": final_result,
         "recommended_titles": titles
-}
+    }
 
 
 def generate_image(prompt: str) -> str:

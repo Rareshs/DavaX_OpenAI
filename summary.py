@@ -1,54 +1,72 @@
 book_summaries_dict = {
     "1984": (
-        "A dystopian story about a totalitarian society controlled by surveillance, "
-        "propaganda, and thought police. Winston Smith, the protagonist, secretly rebels against the system "
-        "in search of truth and freedom. Themes: surveillance, control, rebellion."
+        "In a dystopian future ruled by the omnipresent Big Brother, individual freedom is obliterated through constant surveillance and thought control. "
+        "Winston Smith, a low-ranking worker, begins to question the regime and dreams of rebellion and truth. "
+        "As he falls in love and seeks personal freedom, he confronts the terrifying consequences of defiance. "
+        
     ),
     "The Hobbit": (
-        "Bilbo Baggins, a timid hobbit, embarks on an unexpected adventure with dwarves "
-        "to reclaim their homeland from a dragon. Along the way, he discovers courage, friendship, "
-        "and the thrill of exploration. Themes: adventure, friendship, self-discovery."
+        "Bilbo Baggins, a comfort-loving hobbit, is swept into a grand quest with a group of dwarves to reclaim their homeland from the dragon Smaug. "
+        "Reluctant at first, Bilbo discovers his own courage and cleverness in battles, riddles, and dark forests. "
+        "This prelude to The Lord of the Rings is filled with magic, monsters, and moral growth. "
+        
     ),
     "To Kill a Mockingbird": (
-        "Set in the racially charged South, the novel follows young Scout Finch as her father, "
-        "a lawyer, defends a black man falsely accused of rape. Themes: justice, racism, childhood innocence."
+        "Set in 1930s Alabama, young Scout Finch witnesses the harsh realities of racial injustice as her father, Atticus, defends a Black man falsely accused of rape. "
+        "Through her innocent eyes, we explore prejudice, honor, and moral complexity in a divided society. "
+        "The novel blends childhood wonder with adult injustice in a powerful coming-of-age story. "
+        
     ),
     "The Great Gatsby": (
-        "A tale of ambition and love in the Roaring Twenties, told through the eyes of Nick Carraway. "
-        "Gatsby’s pursuit of Daisy reveals the emptiness behind the American Dream. Themes: wealth, illusion, longing."
+        "Narrated by Nick Carraway, this novel follows Jay Gatsby, a mysterious millionaire obsessed with rekindling his past love for Daisy Buchanan. "
+        "Set in the opulent, shallow 1920s, Gatsby’s glamorous parties mask the emptiness of the American Dream. "
+        "It's a tale of illusion, longing, and the consequences of obsessive idealism. "
+        
     ),
     "Pride and Prejudice": (
-        "Elizabeth Bennet navigates society, love, and class as she meets the proud Mr. Darcy. "
-        "Themes: social norms, love, personal growth."
+        "Elizabeth Bennet, a smart and independent young woman, clashes with the proud and reserved Mr. Darcy in a world dominated by class and social expectations. "
+        "Through misunderstandings, wit, and eventual understanding, they overcome their prejudices. "
+        "A timeless romantic satire that explores love, reputation, and personal growth. "
+        
     ),
     "Brave New World": (
-        "In a future society based on consumerism and control, individuality is suppressed for the sake of stability. "
-        "Bernard Marx seeks meaning in a dehumanized world. Themes: conformity, technology, individuality."
+        "In a technologically advanced society where pleasure and conformity are mandatory, individuals are manufactured and conditioned to serve the collective. "
+        "Bernard Marx and others begin to question their purpose in a world without love, family, or choice. "
+        "The novel critiques blind consumerism, dehumanization, and the cost of artificial happiness. "
+       
     ),
     "Moby-Dick": (
-        "Captain Ahab’s obsession with a great white whale drives his crew toward doom. "
-        "Themes: obsession, revenge, nature vs. man."
+        "Captain Ahab embarks on a monomaniacal pursuit of Moby Dick, the great white whale that once maimed him. "
+        "Told by Ishmael, a sailor aboard the doomed ship Pequod, the journey dives deep into themes of revenge, fate, and madness. "
+        "A philosophical sea-epic exploring man’s struggle against nature and obsession. "
+        
     ),
     "Harry Potter and the Sorcerer's Stone": (
-        "A young boy discovers he is a wizard and attends Hogwarts, making friends and facing danger in his first year. "
-        "Themes: friendship, courage, self-discovery, magic."
+        "Harry Potter, an orphan mistreated by his relatives, learns on his 11th birthday that he is a wizard. "
+        "At Hogwarts School of Witchcraft and Wizardry, he makes friends, uncovers secrets, and faces the dark legacy of the villain who killed his parents. "
+        "It’s the start of a magical journey filled with discovery, danger, and destiny. "
+        
     ),
     "Fahrenheit 451": (
-        "In a world where books are banned, firemen burn them. Montag begins to question his role and society. "
-        "Themes: censorship, knowledge, rebellion."
+        "In a society where books are outlawed and critical thinking is suppressed, fireman Guy Montag burns books for a living. "
+        "When he begins to question his role and the emptiness of his world, he seeks meaning in forbidden knowledge. "
+        "This novel explores the power of ideas and the dangers of censorship and conformity. "
+        
     ),
     "The Alchemist": (
-        "Santiago, a shepherd, dreams of finding treasure in Egypt. On his journey, he learns to follow his heart "
-        "and embrace the Soul of the World. Themes: destiny, self-discovery, faith."
+        "Santiago, a young shepherd from Spain, dreams of treasure buried near the Egyptian pyramids. "
+        "Guided by omens and wise mentors, he embarks on a journey of spiritual discovery, learning that true treasure lies in following one’s personal legend. "
+        "A poetic fable about purpose, destiny, and faith in the universe. "
+        
     ),
     "All Quiet on the Western Front": (
-        "Paul Bäumer, a young German soldier, enlists in World War I alongside his classmates, driven by patriotism and youthful enthusiasm. "
-        "However, he is soon confronted by the brutal horrors of trench warfare: constant bombardments, meaningless slaughter, and the psychological toll of surviving while others die. "
-        "As the war drags on, Paul becomes emotionally numb and increasingly detached from civilian life, realizing that the glory of war is a lie. "
-        "The novel is a stark, honest portrayal of the trauma and futility experienced by a generation of soldiers. "
-        "Themes: war, trauma, disillusionment, death, isolation."
+        "Paul Bäumer, a young German soldier, enlists in World War I filled with youthful enthusiasm. "
+        "He soon confronts the brutal horrors of trench warfare, where idealism is shattered by death, fear, and psychological trauma. "
+        "The novel is a haunting portrayal of a lost generation broken by war. "
+        
     )
 }
+
 
 def get_summary_by_title(title: str) -> str:
     return book_summaries_dict.get(title, "Summary not available for this title.")
