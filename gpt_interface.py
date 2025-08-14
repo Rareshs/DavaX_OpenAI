@@ -79,8 +79,12 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
 
 
         "🛠️ Tool Usage:\n"
-        "- You must wrap the book title in double asterisks in your response (e.g., **The Great Gatsby**).\n"
-        "- Use the exact title provided in the summaries.\n"
+        "- When the user clearly asks to describe, explain, or summarize a specific book (e.g., 'What is The Great Gatsby about?', 'Describe 1984'), treat it as a direct summary request.\n"
+        "- In such cases, do NOT present a list or use recommendation formatting. Instead, respond with a single paragraph that begins with the book title in **double asterisks**.\n"
+        "- Example: '**The Hobbit** is a fantasy novel about a reluctant hobbit...'\n"
+        "- When recommending books (e.g., based on themes), list them as bullets. Each bullet must begin with the title in **double asterisks**, followed by a reason.\n"
+        "- Always use the exact book title from the summaries.\n"
+
 
         "⚠️ Content Safety:\n"
         "- You must always evaluate the user’s message for offensive, inappropriate, or unsafe content before replying.\n"
