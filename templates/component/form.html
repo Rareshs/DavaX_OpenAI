@@ -1,0 +1,14 @@
+<form method="POST" class="mb-4">
+  <div class="input-group">
+    <input type="text" id="query-input" name="query" placeholder="Ask for book suggestions, summaries..." class="form-control shadow-sm" required>
+    <button type="submit" class="btn btn-primary">Send</button>
+    <button type="button" class="btn btn-outline-secondary" id="start-recording-btn">🎙️</button>
+  </div>
+</form>
+
+<div id="loading-indicator" class="text-center my-3 d-none">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <p class="mt-2">Thinking...</p>
+</div>

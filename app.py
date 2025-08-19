@@ -18,7 +18,7 @@ def home():
         if user_query:
             # 1. Extract themes from user query
             themes = extract_themes(user_query)
-
+            
             # 2. Query ChromaDB for semantic matches
             embedding = get_embedding(themes)
             results = collection.query(query_embeddings=[embedding], n_results=3)

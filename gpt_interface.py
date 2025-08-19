@@ -11,6 +11,20 @@ import re
 dotenv.load_dotenv()
 oa_client = OpenAI(api_key=os.getenv("OPENAI_API"))
 
+def format_recommendations(titles: list[str]) -> str:
+    """Return a clean, well-structured Markdown response with clear separation."""
+    if not titles:
+        return "No book recommendations could be generated."
+
+    blocks = []
+    for idx, title in enumerate(titles, start=1):
+        summary = get_summary_by_title(title)
+        blocks.append(
+            f"### {idx}. **{title}**\n"
+            f"{summary.strip()}\n"
+        )
+    return "## 📚 Recommended Books\n\n" + "\n".join(blocks)
+
 def extract_themes(query: str) -> str:
     system_prompt = (
         "You are an AI that extracts key literary themes or topics from a user question. "
@@ -62,9 +76,9 @@ tools = [
 ]
 
 
-def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: list[dict]) -> str:
+def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: list[dict]) -> dict:
     system_prompt = (
-        "You are a helpful assistant that recommends books based only on the provided summaries.\n"
+        "You are a helpful assistant that recommends books based only on the provifded summaries.\n"
         "Each summary includes the title of the book.\n\n"
 
         "📚 Recommendation Rules:\n"
@@ -148,16 +162,11 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
             }
 
     # ❌ Fallback — if no tool call, format the summaries manually
-    result_text = msg.content
+    result_text = msg.content or ""
     titles = extract_titles_from_response(result_text)
 
     if titles:
-        full_blocks = [
-            f"• **{title}**\n{get_summary_by_title(title)}"
-            for title in titles
-        ]
-        summaries_text = "\n\n" + "\n\n".join(full_blocks)
-        final_result = "📚 Recommended Books:\n\n" + summaries_text
+        final_result = format_recommendations(titles)
     else:
         final_result = result_text
 

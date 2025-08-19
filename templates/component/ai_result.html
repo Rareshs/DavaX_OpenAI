@@ -1,0 +1,27 @@
+{% if result %}
+<div class="card mb-4 shadow-sm border-0">
+  <div class="card-body">
+    <h5 class="card-title">AI Answer</h5>
+    <p class="card-text" id="ai-result">{{ result|safe }}</p>
+
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      <button type="button" class="btn btn-success" id="play-btn">🔊 Play</button>
+      <button type="button" class="btn btn-secondary" id="stop-btn">⏹ Stop</button>
+    </div>
+
+    {% if recommended_titles and recommended_titles|length > 0 %}
+    <div class="mt-3">
+      <label class="form-label fw-semibold">🎨 Generate a cover for:</label>
+      <div id="cover-buttons" class="d-flex flex-wrap gap-2">
+        {% for t in recommended_titles %}
+          <button type="button" class="btn btn-info generate-image" data-title="{{ t }}">
+            {{ t }}
+          </button>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endif %}
