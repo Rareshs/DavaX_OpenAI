@@ -17,7 +17,8 @@ dist/
 .DS_Store
 
 
-static/*
+static/audio/
+static/audio_input
 chroma_book_db/
 .vscode/
 .idea/

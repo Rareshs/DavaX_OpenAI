@@ -1,0 +1,129 @@
+:root {
+  --bg-body: #fdf6ee;
+  --bg-card: #fcfafa;
+  --text-main: #5b4636;
+  --text-muted: #7a6a58;
+  --accent: #a47148;
+  --accent-hover: #8b5e3c;
+}
+
+body {
+  background: var(--bg-body);
+  min-height: 100vh;
+  font-family: 'Spectral', serif;
+}
+
+.app-container {
+  padding: 2rem 2rem 2rem 1.5rem;
+  background-color: var(--bg-card);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  background-color: #fefaf6;
+}
+
+.app-title {
+  font-weight: 700;
+  font-size: 2rem;
+  color: var(--text-main);
+}
+
+.input-group > input {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.input-group > button {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.btn {
+  height: 100%;
+  padding: 0.6rem 1rem;
+  font-weight: 500;
+  font-family: 'Georgia', serif;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.btn-outline-secondary {
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--text-main);
+}
+
+.card-text {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+}
+
+#image-container {
+  padding-top: 0.5rem;
+}
+
+#image-container img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s ease;
+  border-radius: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#image-container img:hover {
+  transform: scale(1.03);
+}
+
+#image-container h5 {
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  color: var(--text-main);
+}
+
+/* --- AI Answer Markdown Styling --- */
+#ai-result h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0.25rem 0 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-main);
+}
+
+#ai-result h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0.9rem 0 0.25rem;
+  color: var(--accent);
+}
+
+#ai-result p {
+  margin: 0.25rem 0 0.9rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+#ai-result strong {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+#ai-result ol,
+#ai-result ul {
+  padding-left: 1.2rem;
+  margin-bottom: 1rem;
+}

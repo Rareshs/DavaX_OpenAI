@@ -75,6 +75,16 @@ tools = [
     }
 ]
 
+def is_flagged_by_moderation(text: str) -> bool:
+    moderation_resp = oa_client.moderations.create(input=text)
+    return moderation_resp.results[0].flagged
+
+def handle_user_query(user_query: str):
+    if is_flagged_by_moderation(user_query):
+        return {
+            "result": "⚠️ Your message contains inappropriate language or violates our safety guidelines. I cannot continue this conversation.",
+            "recommended_titles": []
+        }
 
 def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: list[dict]) -> dict:
     system_prompt = (
@@ -98,15 +108,6 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
         "- Example: '**The Hobbit** is a fantasy novel about a reluctant hobbit...'\n"
         "- When recommending books (e.g., based on themes), list them as bullets. Each bullet must begin with the title in **double asterisks**, followed by a reason.\n"
         "- Always use the exact book title from the summaries.\n"
-
-
-        "⚠️ Content Safety:\n"
-        "- You must always evaluate the user’s message for offensive, inappropriate, or unsafe content before replying.\n"
-        "- If the user’s input contains profanity, hate speech, explicit sexual content, or promotes violence, you MUST NOT continue the conversation.\n"
-        "- Do not generate or recommend any content in such cases.\n"
-        "- Instead, respond exactly like this:\n"
-        "  ⚠️ Your message contains inappropriate language or violates our safety guidelines. I cannot continue this conversation.\n"
-        "- You are not allowed to explain, justify, or respond in any other way.\n"
 
 
 )
