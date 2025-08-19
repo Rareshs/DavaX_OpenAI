@@ -127,3 +127,14 @@ body {
   padding-left: 1.2rem;
   margin-bottom: 1rem;
 }
+
+
+#seek-bar {
+  width: 200px;
+  margin: 0 0.5rem;
+}
+#time-label {
+  min-width: 90px;
+  text-align: right;
+}
+

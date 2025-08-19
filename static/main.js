@@ -10,7 +10,10 @@ let stream = null;
 
 const queryInput = document.getElementById("query-input");
 const startRecordingBtn = document.getElementById("start-recording-btn");
-
+const playBtn = document.getElementById("play-btn");
+const pauseBtn = document.getElementById("pause-btn");
+const seekBar = document.getElementById("seek-bar");
+const timeLabel = document.getElementById("time-label");
 const recordingStatus = document.createElement("div");
 recordingStatus.className = "mt-2 text-success small";
 recordingStatus.id = "recording-status";
@@ -66,7 +69,7 @@ startRecordingBtn?.addEventListener("click", async () => {
 });
 
 // Text-to-Speech
-document.getElementById("play-btn")?.addEventListener("click", () => {
+playBtn?.addEventListener("click", () => {
   const summary = document.getElementById("ai-result")?.innerText;
   if (!summary) return;
 
@@ -82,20 +85,59 @@ document.getElementById("play-btn")?.addEventListener("click", () => {
           currentAudio.pause();
           currentAudio.currentTime = 0;
         }
+
         currentAudio = new Audio(data.audio_url);
+
+        currentAudio.addEventListener("loadedmetadata", () => {
+          seekBar.max = currentAudio.duration;
+          timeLabel.textContent = `00:00 / ${formatTime(currentAudio.duration)}`;
+        });
+
+        currentAudio.addEventListener("timeupdate", () => {
+          seekBar.value = currentAudio.currentTime;
+          timeLabel.textContent = `${formatTime(currentAudio.currentTime)} / ${formatTime(currentAudio.duration)}`;
+        });
+
+        currentAudio.addEventListener("ended", () => {
+          pauseBtn.disabled = true;
+          playBtn.disabled = false;
+          pauseBtn.textContent = "⏸ Pause";
+          seekBar.value = 0;
+        });
+
         currentAudio.play();
+        playBtn.disabled = true;
+        pauseBtn.disabled = false;
+        pauseBtn.textContent = "⏸ Pause";
       } else {
         alert("Error playing voice: " + (data.error || "unknown"));
       }
     });
 });
-
-document.getElementById("stop-btn")?.addEventListener("click", () => {
+pauseBtn?.addEventListener("click", () => {
   if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
+    if (currentAudio.paused) {
+      currentAudio.play();
+      pauseBtn.textContent = "⏸ Pause";
+    } else {
+      currentAudio.pause();
+      pauseBtn.textContent = "▶️ Resume";
+    }
   }
 });
+
+seekBar?.addEventListener("input", () => {
+  if (currentAudio) {
+    currentAudio.currentTime = seekBar.value;
+  }
+});
+
+function formatTime(seconds) {
+  const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+  const s = Math.floor(seconds % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
 
 // Generate Image buttons
 document.getElementById("cover-buttons")?.addEventListener("click", (e) => {

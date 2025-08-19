@@ -4,10 +4,13 @@
     <h5 class="card-title">AI Answer</h5>
     <p class="card-text" id="ai-result">{{ result|safe }}</p>
 
-    <div class="d-flex flex-wrap gap-2 mt-3">
-      <button type="button" class="btn btn-success" id="play-btn">🔊 Play</button>
-      <button type="button" class="btn btn-secondary" id="stop-btn">⏹ Stop</button>
+    <div id="audio-controls" class="d-flex align-items-center gap-2 mt-3">
+        <button class="btn btn-success" id="play-btn">▶️ Play</button>
+        <button class="btn btn-secondary" id="pause-btn" disabled>⏸ Pause</button>
+        <input type="range" id="seek-bar" value="0" min="0" max="100" class="form-range" style="width: 200px;">
+        <span id="time-label" class="text-muted small">00:00 / 00:00</span>
     </div>
+
 
     {% if recommended_titles and recommended_titles|length > 0 %}
     <div class="mt-3">
