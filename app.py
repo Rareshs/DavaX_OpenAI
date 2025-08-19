@@ -15,26 +15,26 @@ def home():
 
     if request.method == "POST":
         user_query = request.form.get("query", "")
-    if user_query:
-        # ✅ 1. Check moderation first
-        moderation_result = handle_user_query(user_query)
-        if moderation_result:
-            # Blocked by moderation — return early
-            result = moderation_result["result"]
-            recommended_titles = moderation_result["recommended_titles"]
-            return render_template("index.html", result=result, recommended_titles=recommended_titles)
+        if user_query:
+            # ✅ 1. Check moderation first
+            moderation_result = handle_user_query(user_query)
+            if moderation_result:
+                # Blocked by moderation — return early
+                result = moderation_result["result"]
+                recommended_titles = moderation_result["recommended_titles"]
+                return render_template("index.html", result=result, recommended_titles=recommended_titles)
 
-        # ✅ 2. Continue normal flow
-        themes = extract_themes(user_query)
-        embedding = get_embedding(themes)
-        results = collection.query(query_embeddings=[embedding], n_results=3)
+            # ✅ 2. Continue normal flow
+            themes = extract_themes(user_query)
+            embedding = get_embedding(themes)
+            results = collection.query(query_embeddings=[embedding], n_results=3)
 
-        summaries = results["documents"][0]
-        metadatas = results["metadatas"][0]
+            summaries = results["documents"][0]
+            metadatas = results["metadatas"][0]
 
-        response = recommend_and_call_tool(user_query, summaries, metadatas)
-        result = response["result"]
-        recommended_titles = response["recommended_titles"]
+            response = recommend_and_call_tool(user_query, summaries, metadatas)
+            result = response["result"]
+            recommended_titles = response["recommended_titles"]
 
 
     # 4. Return results to template
