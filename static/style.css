@@ -129,9 +129,11 @@ body {
 }
 
 
-#seek-bar {
-  width: 200px;
-  margin: 0 0.5rem;
+#seek-bar::-webkit-slider-thumb {
+  background: #a47148;
+}
+#seek-bar::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, #a47148 0%, #ddd 0%);
 }
 #time-label {
   min-width: 90px;
