@@ -99,6 +99,7 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
         "- If the user does not specify a number, and multiple books match, you should list all relevant titles.\n"
         "- Never recommend more books than the user requested.\n"
         "- Format your response as a bullet list.\n"
+        "- If the user doesn't specify which genre/mood/audiance, ask him what type of book it wants to read.\n"
         "- Each bullet must begin with the book title in **double asterisks**, followed by a short reason for the match.\n"
 
 
