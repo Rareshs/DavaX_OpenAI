@@ -43,24 +43,64 @@ Smart Scribe is a book recommendation web application powered by an LLM (OpenAI)
 └── README.md
 ```
 
-After cloning the repo
-1. Create a venv
+## After Cloning the Repo
+
+1. **Create a virtual environment**
+
+<details>
+<summary>Linux / macOS</summary>
+
+```bash
 python -m venv .venv
-source .venv/bin/activate #linux
-.venv\Scripts\activate #windows
+source .venv/bin/activate
+```
 
-2. Install requirments
+</details>
+
+<details>
+<summary>Windows</summary>
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+</details>
+
+---
+
+2. **Install dependencies**
+
+```bash
 pip install -r requirements.txt
+```
 
-3. Add .env file with your OPENAI_API key
+---
+
+3. **Add your OpenAI API key to a `.env` file**
+
+```env
 OPENAI_API=your-api-key-here
+```
 
-4. Initialize vector store (ChromaDB)
+---
+
+4. **Initialize vector store (ChromaDB)**
+
+```bash
 python process_books.py
+```
 
-5. Start the flask app
+---
+
+5. **Start the Flask app**
+
+```bash
 python app.py
+```
 
-6. Check localhost
-http://localhost:5000
+---
 
+6. **Visit the app in your browser**
+
+[http://localhost:5000](http://localhost:5000)
