@@ -69,4 +69,17 @@ book_summaries_dict = {
 
 
 def get_summary_by_title(title: str) -> str:
-    return book_summaries_dict.get(title, "Summary not available for this title.")
+    try:
+        if not title or not isinstance(title, str):
+            return "⚠️ Invalid book title provided."
+
+        title_key = title.strip().lower()
+        for key in book_summaries_dict:
+            if key.strip().lower() == title_key:
+                return book_summaries_dict[key].strip()
+
+        return f"Summary not found for: '{title}'."
+    except Exception as e:
+        print(f"[ERROR] Failed to get summary for title '{title}': {e}")
+        return "⚠️ An error occurred while retrieving the book summary."
+
