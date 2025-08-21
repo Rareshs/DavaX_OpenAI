@@ -195,6 +195,7 @@ Avoid copyrighted logos. Include the title prominently.`;
 
 // Markdown rendering (move from HTML inline)
 document.addEventListener("DOMContentLoaded", () => {
+  startFloatingBooksContinuous()
   // Markdown rendering
   const el = document.getElementById("ai-result");
   if (el) {
@@ -203,25 +204,33 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Floating books reset
-  resetFloatingBooks();
+
 });
 
 
 
-function resetFloatingBooks() {
-  // Remove existing floating books
-  document.querySelectorAll(".floating-book").forEach(el => el.remove());
+function startFloatingBooksContinuous() {
+  // Creează container pentru cărți, dacă nu există
+  let container = document.getElementById("floating-books");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "floating-books";
+    document.body.appendChild(container);
+  }
 
-  // Force reflow using requestAnimationFrame
-  requestAnimationFrame(() => {
-    const numberOfBooks = 12;
-    for (let i = 0; i < numberOfBooks; i++) {
-      const book = document.createElement("div");
-      book.className = "floating-book";
-      book.style.left = `${Math.random() * 100}vw`;
-      book.style.top = `${window.innerHeight - 10}px`;  // Start just below the visible area
-      book.style.animationDelay = `${Math.random() * 10}s`;
-      document.body.appendChild(book);
-    }
-  });
+  // Creează o carte nouă la fiecare 1.2 secunde
+  setInterval(() => {
+    const book = document.createElement("div");
+    book.className = "floating-book";
+    book.style.left = `${Math.random() * 100}vw`;
+    book.style.top = `${window.innerHeight - 10}px`; // aproape de jos
+    book.style.animationDelay = "0s";
+    container.appendChild(book);
+
+    // Șterge cartea după 18 secunde (după ce a ieșit din ecran)
+    setTimeout(() => {
+      book.remove();
+    }, 24000);
+  }, 1500); // 1.5s între cărți
 }
+
