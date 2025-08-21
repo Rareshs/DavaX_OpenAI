@@ -216,5 +216,5 @@ body::after {
 }
 
 @keyframes fadeIn {
-  to { opacity: 0.1; }
+  to { opacity: 0.15; }
 }
