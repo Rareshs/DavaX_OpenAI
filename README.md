@@ -34,6 +34,11 @@ Smart Scribe is a book recommendation web application powered by an LLM (OpenAI)
 │ ├── layout.html # Base HTML layout
 │ ├── index.html # Main interface
 │ └── component/ # HTML components (form, result)
+├──tests
+│ ├── test_app.py
+│ ├── test_gpt_interface.py
+│ ├── test_rag_core.py
+│ └── test_summary.py
 ├── .env # Contains your OpenAI API key
 └── README.md
 ```
