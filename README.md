@@ -18,6 +18,7 @@ Smart Scribe is a book recommendation web application powered by an LLM (OpenAI)
 ---
 
 ## Project Structure
+```
 ├── app.py # Flask app entrypoint
 ├── gpt_interface.py # LLM communication, moderation, tool usage
 ├── summary.py # get_summary_by_title() tool
@@ -35,6 +36,7 @@ Smart Scribe is a book recommendation web application powered by an LLM (OpenAI)
 │ └── component/ # HTML components (form, result)
 ├── .env # Contains your OpenAI API key
 └── README.md
+```
 
 After cloning the repo
 1. Create a venv
