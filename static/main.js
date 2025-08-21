@@ -172,12 +172,13 @@ Avoid copyrighted logos. Include the title prominently.`;
         const newCard = document.createElement("div");
         newCard.className = "text-center mb-5";
         newCard.innerHTML = `
-          <h5 class="mt-4">Generated Book Cover — ${title}</h5>
+        <div class="cover-card text-center">
+          <h5 class="mt-2">Generated Book Cover — ${title}</h5>
           <img src="data:image/png;base64,${data.image_base64}"
-               alt="Book cover for ${title}"
-               class="img-fluid rounded shadow-sm mt-3"
-               style="max-width: 420px;">
-        `;
+              alt="Book cover for ${title}"
+              class="img-fluid rounded shadow-sm mt-3 generated-cover">
+        </div>
+      `;
         imageContainer.innerHTML = "";
         imageContainer.appendChild(newCard);
       } else {
@@ -194,9 +195,33 @@ Avoid copyrighted logos. Include the title prominently.`;
 
 // Markdown rendering (move from HTML inline)
 document.addEventListener("DOMContentLoaded", () => {
+  // Markdown rendering
   const el = document.getElementById("ai-result");
   if (el) {
     const md = el.textContent.trim();
     el.innerHTML = marked.parse(md);
   }
+
+  // Floating books reset
+  resetFloatingBooks();
 });
+
+
+
+function resetFloatingBooks() {
+  // Remove existing floating books
+  document.querySelectorAll(".floating-book").forEach(el => el.remove());
+
+  // Force reflow using requestAnimationFrame
+  requestAnimationFrame(() => {
+    const numberOfBooks = 12;
+    for (let i = 0; i < numberOfBooks; i++) {
+      const book = document.createElement("div");
+      book.className = "floating-book";
+      book.style.left = `${Math.random() * 100}vw`;
+      book.style.top = `${window.innerHeight - 10}px`;  // Start just below the visible area
+      book.style.animationDelay = `${Math.random() * 10}s`;
+      document.body.appendChild(book);
+    }
+  });
+}
