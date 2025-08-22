@@ -12,6 +12,10 @@ dotenv.load_dotenv()
 oa_client = OpenAI(api_key=os.getenv("OPENAI_API"))
 
 def format_recommendations(titles: list[str]) -> str:
+    """
+    Formats a list of book titles into a markdown string with summaries.
+    Returns a formatted string or an error message.
+    """
     try:
         if not titles:
             return "No book recommendations could be generated."
@@ -27,6 +31,10 @@ def format_recommendations(titles: list[str]) -> str:
         return f"Error formatting recommendations: {e}"
 
 def extract_themes(query: str) -> str:
+    """
+    Uses OpenAI to extract key literary themes from a user query.
+    Returns a comma-separated list of keywords or an error message.
+    """
     try:
         system_prompt = (
             "You are an AI that extracts key literary themes or topics from a user question. "
@@ -44,6 +52,10 @@ def extract_themes(query: str) -> str:
         return f"Error extracting themes: {e}"
 
 def generate_speech(text: str, model="tts-1", voice="nova") -> str:
+    """
+    Generates speech audio from text using OpenAI's TTS.
+    Returns the file path to the generated audio or an error message.
+    """
     try:
         speech_response = oa_client.audio.speech.create(
             model=model,
@@ -60,6 +72,10 @@ def generate_speech(text: str, model="tts-1", voice="nova") -> str:
         return f"Error generating speech: {e}"
 
 def is_flagged_by_moderation(text: str) -> bool:
+    """
+    Checks if the input text is flagged by OpenAI's moderation endpoint.
+    Returns True if flagged, False otherwise.
+    """
     try:
         moderation_resp = oa_client.moderations.create(input=text)
         return moderation_resp.results[0].flagged
@@ -68,18 +84,33 @@ def is_flagged_by_moderation(text: str) -> bool:
         print(f"Moderation error: {e}")
         return False
 
+def normalize_input(text: str) -> str:
+    """Returns lowercase input with punctuation removed and whitespace trimmed."""
+    return re.sub(r"[^\w\s]", "", text.lower()).strip()
+
+
 def handle_user_query(user_query: str):
+    """
+    Handles moderation for a user query (normalized).
+    Returns a dict with result and recommended_titles if flagged or error.
+    """
     try:
-        if is_flagged_by_moderation(user_query):
+        cleaned_query = normalize_input(user_query)
+
+        if is_flagged_by_moderation(cleaned_query):
             return {
                 "result": "⚠️ Your message contains inappropriate language or violates our safety guidelines. I cannot continue this conversation.",
                 "recommended_titles": []
             }
+        return None
     except Exception as e:
         return {
             "result": f"Error handling user query: {e}",
             "recommended_titles": []
         }
+
+
+# Tool definition for OpenAI function calling
 tools = [
     {
         "type": "function",
@@ -101,6 +132,11 @@ tools = [
 ]
 
 def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: list[dict]) -> dict:
+    """
+    Uses OpenAI to recommend books based on provided summaries and user query.
+    Handles tool calls for summary lookup and formats the final result.
+    Returns a dict with result and recommended_titles.
+    """
     try:
         system_prompt = (
             "You are a helpful assistant that recommends books based only on the provifded summaries.\n"
@@ -117,7 +153,6 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
             "- If the user doesn't specify which genre/mood/audiance, ask him what type of book it wants to read.\n"
             "- Each bullet must begin with the book title in **double asterisks**, followed by a short reason for the match.\n"
 
-
             "🛠️ Tool Usage:\n"
             "- When the user clearly asks to describe, explain, or summarize a specific book (e.g., 'What is The Great Gatsby about?', 'Describe 1984'), treat it as a direct summary request.\n"
             "- In such cases, do NOT present a list or use recommendation formatting. Instead, respond with a single paragraph that begins with the book title in **double asterisks**.\n"
@@ -125,8 +160,8 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
             "- When recommending books (e.g., based on themes), list them as bullets. Each bullet must begin with the title in **double asterisks**, followed by a reason.\n"
             "- Always use the exact book title from the summaries.\n"
 
-
-)
+            "- If the user uses inappropriate or offensive language (e.g., swearing, slurs), you must not answer their request. Instead, respond with a firm but polite message such as: '⚠️ Your message contains inappropriate language or violates our safety guidelines. I cannot continue this conversation.'\n"
+        )
 
         # Combine summaries with their corresponding titles
         summaries_text = "\n\n".join(
@@ -148,7 +183,7 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
 
         msg = response.choices[0].message
 
-        # If GPT made a tool call
+        # If GPT made a tool call, handle summary lookup
         if msg.tool_calls:
             tool_call = msg.tool_calls[0]
             args = json.loads(tool_call.function.arguments)
@@ -198,6 +233,10 @@ def recommend_and_call_tool(user_query: str, summaries: list[str], metadatas: li
         }
 
 def generate_image(prompt: str) -> str:
+    """
+    Generates an image from a prompt using OpenAI's image API.
+    Returns base64-encoded image data or an error message.
+    """
     try:
         image_response = oa_client.images.generate(
             model="gpt-image-1",
@@ -210,6 +249,10 @@ def generate_image(prompt: str) -> str:
         return f"Error generating image: {e}"
 
 def speech_to_text(audio_path: str) -> str:
+    """
+    Transcribes speech from an audio file using OpenAI's Whisper model.
+    Returns the transcribed text or an error message.
+    """
     try:
         with open(audio_path, "rb") as audio_file:
             transcript = oa_client.audio.transcriptions.create(
@@ -222,6 +265,10 @@ def speech_to_text(audio_path: str) -> str:
         return f"Error transcribing speech: {e}"
 
 def extract_titles_from_response(response: str) -> list[str]:
+    """
+    Extracts book titles from a response string using regex.
+    Returns a list of titles found between double asterisks.
+    """
     try:
         return re.findall(r"\*\*(.*?)\*\*", response)
     except Exception as e:

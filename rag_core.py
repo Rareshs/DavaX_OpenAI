@@ -12,6 +12,10 @@ EMBEDDING_MODEL = "text-embedding-3-small"
 oa_client = OpenAI(api_key=OPENAI_API_KEY)
 
 def setup_chroma():
+    """
+    Initializes and returns a ChromaDB collection for book recommendations.
+    Handles exceptions and returns None on failure.
+    """
     try:
         client = PersistentClient(path="./chroma_book_db")
         return client.get_or_create_collection(name="book_recom")
@@ -20,6 +24,10 @@ def setup_chroma():
         return None
 
 def generate_id(title: str) -> str:
+    """
+    Generates a unique MD5 hash ID for a given book title.
+    Returns an empty string on error.
+    """
     try:
         return hashlib.md5(title.encode("utf-8")).hexdigest()
     except Exception as e:
@@ -27,6 +35,10 @@ def generate_id(title: str) -> str:
         return ""
 
 def get_embedding(text: str, model: str = EMBEDDING_MODEL) -> list[float]:
+    """
+    Gets an embedding vector for the given text using OpenAI's API.
+    Returns an empty list on error.
+    """
     try:
         response = oa_client.embeddings.create(input=[text], model=model)
         return response.data[0].embedding
@@ -35,6 +47,11 @@ def get_embedding(text: str, model: str = EMBEDDING_MODEL) -> list[float]:
         return []
 
 def parse_books(file_path: str):
+    """
+    Parses a file containing book summaries.
+    Returns a list of dicts with 'title' and 'summary' keys.
+    Returns an empty list on error.
+    """
     try:
         with open(file_path, "r", encoding="utf-8") as file:
             text = file.read()

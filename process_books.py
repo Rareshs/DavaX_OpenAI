@@ -3,14 +3,17 @@
 from rag_core import setup_chroma, parse_books, generate_id, get_embedding
 
 try:
+    # Initialize ChromaDB collection
     collection = setup_chroma()
     if collection is None:
         raise Exception("ChromaDB collection could not be initialized.")
 
+    # Parse book summaries from file
     books = parse_books("data/book_summ.txt")
     if not books:
         raise Exception("No books found or failed to parse book summaries.")
 
+    # Add each book to the vector store
     for book in books:
         try:
             book_id = generate_id(book["title"])
@@ -29,9 +32,11 @@ try:
 
     print("Vector store populat cu succes.")
     try:
+        # Peek at the first 3 items in the collection for verification
         print(collection.peek(3))
     except Exception as e:
         print(f"Error peeking into collection: {e}")
 
 except Exception as e:
+    # Handle fatal errors during initialization or processing
     print(f"Fatal error: {e}")
