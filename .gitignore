@@ -22,3 +22,4 @@ static/audio_input
 chroma_book_db/
 .vscode/
 .idea/
+.pytest_cache/

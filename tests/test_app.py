@@ -14,3 +14,16 @@ def test_home_post_empty():
     res = client.post("/", data={"query": ""})
     assert res.status_code == 200
     assert b"AI Answer" not in res.data
+
+def test_post_missing_query_field():
+    client = app.test_client()
+    res = client.post("/", data={})  # no "query"
+    assert res.status_code == 200
+    assert b"AI Answer" not in res.data
+
+
+def test_home_put_method():
+    client = app.test_client()
+    res = client.put("/")
+    assert res.status_code == 405  # Method Not Allowed
+
